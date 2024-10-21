@@ -1,0 +1,73 @@
+Issue: 
+
+Terraform init works, but terraform plan throw this error
+
+Planning failed. Terraform encountered an error while generating this plan.
+╷
+│ Error: building account: getting authenticated object ID: parsing json result from the Azure CLI: waiting for the Azure CLI: exit status 1: ERROR: Decryption failed: [WinError -2146893813] Key not valid for use in specified state. Aki/PersistenceDecryptionError
+│ Please report to us via Github: https://github.com/Azure/azure-cli/issues/20231
+│
+│   with provider["registry.terraform.io/hashicorp/azurerm"],
+│   on main.tf line 13, in provider "azurerm":
+│   13: provider "azurerm" {
+
+Seems to be a token cache issue, however, using az logout gives this error
+
+Decryption failed: [WinError -2146893813] Key not valid for use in specified state. App developer may consider this guidance: https://github.com/AzureAD/microsoft-authentication-extensions-for-python/wiki/PersistenceDecryptionError   
+Please report to us via Github: https://github.com/Azure/azure-cli/issues/20231
+
+Solution:
+
+Deleting %USERPROFILE%\.azure resolved the issue. You need to use az login to sign back in, but after that Terraform plan will work
+
+
+Issue:
+Error: Duplicate resource "azurerm_network_interface" configuration
+│ 
+│   on network.tf line 31:
+│   31: resource "azurerm_network_interface" "network_interface" {
+│
+│ A azurerm_network_interface resource named "network_interface" was already declared at network.tf:19,1-57. Resource names   
+│ must be unique per type in each module.
+
+Solution:
+
+Changed the name resource name on the duplicate and adjusted the code that called it elsewhere.
+
+Various syntax errors found during plan, but were corrected.
+
+Standard_DS1_v2 was not available in my chosen location, so altered the location to the next region.
+
+The specified disk size 32 GB is smaller than the size of the corresponding disk in the VM image: 64 GB. This is not allowed. Adjusted accordingly.
+
+Sources:
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+https://medium.com/@walissonscd/seamless-azure-networking-with-terraform-a-step-by-step-tutorial-on-virtual-network-peering-88d4c994437b
+https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview
+https://gist.github.com/ChristopherA/3d6a2f39c4b623a1a287b3fb7e0aa05b
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subnet
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association
+https://learn.microsoft.com/en-us/azure/developer/terraform/create-resource-group?tabs=azure-cli#implement-the-terraform-code
+https://medium.com/@walissonscd/seamless-azure-networking-with-terraform-a-step-by-step-tutorial-on-virtual-network-peering-88d4c994437b
+https://github.com/KopiCloud/terraform-azure-rhel-vm/blob/main/linux-vm-main.tf
+https://github.com/KopiCloud/terraform-azure-rhel-vm/blob/main/linux-vm-variables.tf
+https://github.com/Azure/azure-cli/issues/30073
+https://github.com/Azure/azure-cli/issues/23355
+https://github.com/AzureAD/microsoft-authentication-extensions-for-python/wiki/PersistenceDecryptionError
+https://medium.com/@omar.egal/how-to-deploy-an-apache-web-server-using-terraform-modules-80d3cc369aa9
+https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/configure-public-ip-load-balancer
+https://learn.microsoft.com/en-us/azure/load-balancer/manage-rules-how-to?source=recommendations
+https://learn.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-internal-terraform
+https://www.reddit.com/r/aws/comments/vnf2cp/network_load_balancer_not_routing_traffic_on/
+https://github.com/hashicorp/terraform-provider-azurerm/issues/17818
+https://github.com/hashicorp/terraform-provider-azurerm/issues/16855
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
+https://learn.microsoft.com/en-us/rest/api/storagerp/storage-accounts/create?view=rest-storagerp-2023-05-01&tabs=HTTP#networkruleset
+https://learn.microsoft.com/en-us/rest/api/storagerp/storage-accounts/create?view=rest-storagerp-2023-05-01&tabs=HTTP#virtualnetworkrule
+https://learn.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-sku-not-available?tabs=azure-cli
+
+
