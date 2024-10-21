@@ -1,3 +1,4 @@
+*NOTE: change the subscriber_id to a different subscription before applying this code.
 A company is looking to create a proof-of-concept environment in Azure. They want a simple VNet as outlined
 below. The company would also like to use terraform to manage their infrastructure via code.
 • 1 VNet – 10.0.0.0/16
